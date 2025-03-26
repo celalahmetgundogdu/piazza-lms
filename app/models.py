@@ -43,6 +43,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
 from datetime import datetime
 # En alta ekle:
+from sqlalchemy import Boolean
 class Answer(Base):
     __tablename__ = "answers"
 
@@ -52,5 +53,27 @@ class Answer(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+    is_anonymous = Column(Boolean, default=False)
+
+    # ilişkiler (önceden eklediysen bunları değiştirmene gerek yok)
     question = relationship("Question", backref="answers")
     user = relationship("User", backref="answers")
+
+
+class AnswerVote(Base):
+    __tablename__ = "answer_votes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    answer_id = Column(Integer, ForeignKey("answers.id", ondelete="CASCADE"), nullable=False)
+    vote = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+from sqlalchemy import Boolean
+
+class Vote(Base):
+    __tablename__ = "votes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    answer_id = Column(Integer, ForeignKey("answers.id"), nullable=False)
+    is_upvote = Column(Boolean, nullable=False)

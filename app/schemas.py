@@ -55,10 +55,15 @@ class QuestionOut(BaseModel):
 from datetime import datetime
 
 # Yanıt oluşturma (POST) için
+from pydantic import BaseModel
+from datetime import datetime
+
+# Yanıt oluşturma (POST) için
 class AnswerCreate(BaseModel):
     content: str
     question_id: int
     user_id: int
+    is_anonymous: bool = False  # 👈 EKLENDİ
 
 # Yanıtı dışa dönerken (GET) kullanılacak model
 class AnswerOut(BaseModel):
@@ -67,8 +72,29 @@ class AnswerOut(BaseModel):
     question_id: int
     user_id: int
     created_at: datetime
+    is_anonymous: bool  # 👈 EKLENDİ
 
     class Config:
         from_attributes = True
 
+class AnswerVoteCreate(BaseModel):
+    user_id: int
+    answer_id: int
+    vote: int  # -1 ya da 1
 
+class AnswerVoteOut(BaseModel):
+    id: int
+    user_id: int
+    answer_id: int
+    vote: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class VoteCreate(BaseModel):
+    user_id: int
+    is_upvote: bool
+
+class VoteDelete(BaseModel):
+    user_id: int
